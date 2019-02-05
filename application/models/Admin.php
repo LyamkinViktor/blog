@@ -18,4 +18,25 @@ class Admin extends Model
         return true;
     }
 
+    public function postValidate($post, $type) {
+        $nameLen = iconv_strlen($post['name']);
+        $descriptionLen = iconv_strlen($post['description']);
+        $textLen = iconv_strlen($post['text']);
+        if ($nameLen < 3 or $nameLen > 100) {
+            $this->error = 'Название должно содержать от 3 до 100 символов';
+            return false;
+        } elseif ($descriptionLen < 3 or $descriptionLen > 100) {
+            $this->error = 'Описание должно содержать от 3 до 100 символов';
+            return false;
+        } elseif ($textLen < 10 or $textLen > 5000) {
+            $this->error = 'Текст должен содержать от 10 до 500 символов';
+            return false;
+        }
+        if (empty($_FILES['img']['tmp_name']) and $type == 'add') {
+            $this->error = 'Изображение не выбрано';
+            return false;
+        }
+        return true;
+    }
+
 }

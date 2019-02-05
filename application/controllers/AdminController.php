@@ -14,6 +14,9 @@ class AdminController extends Controller
     }
 
     public function loginAction() {
+        if (isset($_SESSION['admin'])) {
+            $this->view->redirect('admin/add');
+        }
         if (!empty($_POST)) {
             if (!$this->model->loginValidate($_POST)) {
                 $this->view->message('error', $this->model->error);
@@ -25,10 +28,22 @@ class AdminController extends Controller
     }
 
     public function addAction() {
+        if (!empty($_POST)) {
+            if (!$this->model->postValidate($_POST, 'add')) {
+                $this->view->message('error', $this->model->error);
+            }
+            $this->view->message('success', 'ok');
+        }
         $this->view->render('Добавить пост');
     }
 
     public function editAction() {
+        if (!empty($_POST)) {
+            if (!$this->model->postValidate($_POST, 'edit')) {
+                $this->view->message('error', $this->model->error);
+            }
+            $this->view->message('success', 'ok');
+        }
         $this->view->render('Редактировать пост');
     }
 
@@ -37,7 +52,13 @@ class AdminController extends Controller
     }
 
     public function logoutAction() {
-        exit('выход');
+        unset($_SESSION['admin']);
+        $this->view->redirect('admin/login');
+
+    }
+
+    public function postsAction() {
+        $this->view->render('посты');
     }
 
 }
