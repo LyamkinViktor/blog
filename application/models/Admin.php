@@ -3,6 +3,7 @@
 namespace application\models;
 
 use application\core\Model;
+//use Imagick;
 
 class Admin extends Model
 {
@@ -39,4 +40,27 @@ class Admin extends Model
         return true;
     }
 
+    public function postAdd($post)
+    {
+        $params = [
+            'id' => NULL,
+            'name' => $post['name'],
+            'description' => $post['description'],
+            'text' => $post['text'],
+        ];
+
+        $this->db->query('INSERT INTO posts VALUES (:id, :name, :description, :text)', $params);
+        return $this->db->lastInsertId();
+    }
+
+    public function postUploadImage($path, $id)
+    {
+        /*
+        $img = new Imagick($path);
+        $img->cropThumbnailImage (1060, 800);
+        $img->setImageCompressionQuality(80);
+        $img->writeImage('public/materials/' . $id . '.jpg');
+        */
+        move_uploaded_file($path, 'public/materials/'.$id.'.jpg');
+    }
 }

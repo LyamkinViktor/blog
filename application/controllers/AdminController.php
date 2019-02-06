@@ -4,6 +4,7 @@ namespace application\controllers;
 
 
 use application\core\Controller;
+use application\models\Admin;
 
 class AdminController extends Controller
 {
@@ -32,7 +33,13 @@ class AdminController extends Controller
             if (!$this->model->postValidate($_POST, 'add')) {
                 $this->view->message('error', $this->model->error);
             }
-            $this->view->message('success', 'ok');
+            $id = $this->model->postAdd($_POST);
+            if (!$id) {
+                $this->view->message('success', 'Ошибка обработки запроса');
+            }
+
+            $this->model->postUploadImage($_FILES['img']['tmp_name'], $id);
+            $this->view->message('success', 'Пост добавлен');
         }
         $this->view->render('Добавить пост');
     }
